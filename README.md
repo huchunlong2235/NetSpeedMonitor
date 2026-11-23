@@ -92,3 +92,4 @@ dotnet publish -c Release -r win-x64 --self-contained true \
 ## 开源协议
 
 MIT License —— 详见 [LICENSE](LICENSE)。可自由使用、修改、分发，商用需保留版权声明。
+# NetSpeedMonitor
