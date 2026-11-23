@@ -1,0 +1,230 @@
+<Window x:Class="NetSpeedMonitor.Views.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="网速监控"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded"
+        ContentRendered="Window_ContentRendered"
+        Closing="Window_Closing"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MouseRightButtonUp="Window_MouseRightButtonUp"
+        MouseDoubleClick="Window_MouseDoubleClick"
+        LocationChanged="Window_LocationChanged"
+        SizeChanged="Window_SizeChanged">
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="历史曲线" Command="{Binding ShowHistoryCommand}"/>
+            <MenuItem Header="设置" Command="{Binding OpenSettingsCommand}"/>
+            <Separator/>
+            <MenuItem Header="鼠标穿透 (Ctrl+Alt+M)" IsCheckable="True"
+                      IsChecked="{Binding Config.MousePassThrough}"/>
+            <MenuItem Header="隐藏窗口" Command="{Binding HideWindowCommand}"/>
+            <MenuItem Header="退出" Command="{Binding ExitCommand}"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+
+    <Border x:Name="RootBorder"
+            CornerRadius="{Binding Config.CornerRadius}"
+            Padding="{Binding Config.Padding}"
+            Background="{Binding OverlayBackground}">
+
+        <Grid>
+            <!-- 横向布局 -->
+            <StackPanel x:Name="HorizontalPanel" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Config.Orientation}" Value="Horizontal">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <TextBlock Text="↑" Foreground="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
+                           FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                           FontWeight="Bold" Margin="0,0,3,0" VerticalAlignment="Center"
+                           Visibility="{Binding Config.ShowUpload, Converter={StaticResource BoolToVisibility}}"/>
+                <TextBlock Text="{Binding UploadText}"
+                           Foreground="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
+                           FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding Config.ShowUpload, Converter={StaticResource BoolToVisibility}}"/>
+
+                <TextBlock Text="↓" Foreground="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
+                           FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                           FontWeight="Bold" Margin="12,0,3,0" VerticalAlignment="Center"
+                           Visibility="{Binding Config.ShowDownload, Converter={StaticResource BoolToVisibility}}"/>
+                <TextBlock Text="{Binding DownloadText}"
+                           Foreground="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
+                           FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding Config.ShowDownload, Converter={StaticResource BoolToVisibility}}"/>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0"
+                            Visibility="{Binding Config.ShowMemory, Converter={StaticResource BoolToVisibility}}">
+                    <!-- 进度条在数值之前 -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.MemoryBarPosition}" Value="Before">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Border Width="{Binding Config.MemoryBarWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                CornerRadius="3" Margin="0,0,5,0" VerticalAlignment="Center"
+                                Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
+                                Visibility="{Binding Config.ShowMemoryBar, Converter={StaticResource BoolToVisibility}}">
+                            <Border Width="{Binding MemoryBarFillWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                    CornerRadius="3" HorizontalAlignment="Left"
+                                    Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"/>
+                        </Border>
+                        <TextBlock Text="{Binding Config.MemoryLabel}" Margin="0,0,3,0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <TextBlock Text="{Binding MemoryText}" Margin="0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                    </StackPanel>
+                    <!-- 进度条在数值之后 -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.MemoryBarPosition}" Value="After">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="{Binding Config.MemoryLabel}" Margin="0,0,3,0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <TextBlock Text="{Binding MemoryText}" Margin="0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <Border Width="{Binding Config.MemoryBarWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                CornerRadius="3" Margin="5,0,0,0" VerticalAlignment="Center"
+                                Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
+                                Visibility="{Binding Config.ShowMemoryBar, Converter={StaticResource BoolToVisibility}}">
+                            <Border Width="{Binding MemoryBarFillWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                    CornerRadius="3" HorizontalAlignment="Left"
+                                    Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- 纵向布局 -->
+            <StackPanel x:Name="VerticalPanel" Orientation="Vertical" VerticalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Config.Orientation}" Value="Vertical">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Config.ShowUpload, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="↑" Foreground="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
+                               FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                               FontWeight="Bold" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding UploadText}"
+                               Foreground="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
+                               FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0" Visibility="{Binding Config.ShowDownload, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="↓" Foreground="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
+                               FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                               FontWeight="Bold" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding DownloadText}"
+                               Foreground="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
+                               FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,3,0,0"
+                            Visibility="{Binding Config.ShowMemory, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.MemoryBarPosition}" Value="Before">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <Border Width="{Binding Config.MemoryBarWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                CornerRadius="3" Margin="0,0,5,0" VerticalAlignment="Center"
+                                Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
+                                Visibility="{Binding Config.ShowMemoryBar, Converter={StaticResource BoolToVisibility}}">
+                            <Border Width="{Binding MemoryBarFillWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                    CornerRadius="3" HorizontalAlignment="Left"
+                                    Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"/>
+                        </Border>
+                        <TextBlock Text="{Binding Config.MemoryLabel}" Margin="0,0,3,0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <TextBlock Text="{Binding MemoryText}" Margin="0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Config.MemoryBarPosition}" Value="After">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="{Binding Config.MemoryLabel}" Margin="0,0,3,0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <TextBlock Text="{Binding MemoryText}" Margin="0"
+                                   Foreground="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                                   FontSize="{Binding Config.FontSize}" FontFamily="{Binding Config.FontFamily}"
+                                   Visibility="{Binding Config.ShowMemoryPercent, Converter={StaticResource BoolToVisibility}}"/>
+                        <Border Width="{Binding Config.MemoryBarWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                CornerRadius="3" Margin="5,0,0,0" VerticalAlignment="Center"
+                                Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
+                                Visibility="{Binding Config.ShowMemoryBar, Converter={StaticResource BoolToVisibility}}">
+                            <Border Width="{Binding MemoryBarFillWidth}" Height="{Binding Config.MemoryBarHeight}"
+                                    CornerRadius="3" HorizontalAlignment="Left"
+                                    Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

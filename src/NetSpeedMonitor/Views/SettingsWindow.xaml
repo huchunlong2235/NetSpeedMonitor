@@ -1,0 +1,247 @@
+<Window x:Class="NetSpeedMonitor.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="网速监控 - 设置" Height="720" Width="520"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Background="#FAFAFA">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Padding="0,0,8,0">
+            <StackPanel>
+
+                <TextBlock Text="外观主题" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <ComboBox x:Name="ThemeCombo" Height="30" Margin="0,0,0,4"
+                          ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}"
+                          DisplayMemberPath="Name"/>
+                <TextBlock Text="选择预设主题，或直接在下方微调各项颜色" Style="{StaticResource LabelText}" Margin="0,0,0,14"/>
+
+                <TextBlock Text="颜色" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="背景色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.BackgroundColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.BackgroundColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="文字色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.TextColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.TextColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="上传色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.UploadColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="下载色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.DownloadColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="内存色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+
+                <TextBlock Text="尺寸与透明度" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="透明度" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="0.2" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                            Value="{Binding Config.Opacity}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.Opacity, Converter={StaticResource DoubleToString}, ConverterParameter=2}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="字号" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="10" Maximum="24" SmallChange="1" LargeChange="2"
+                            Value="{Binding Config.FontSize}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.FontSize, Converter={StaticResource DoubleToString}, ConverterParameter=0}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="圆角" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="20" SmallChange="1" LargeChange="2"
+                            Value="{Binding Config.CornerRadius}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.CornerRadius, Converter={StaticResource DoubleToString}, ConverterParameter=0}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="内边距" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="4" Maximum="20" SmallChange="1" LargeChange="2"
+                            Value="{Binding Config.Padding}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.Padding, Converter={StaticResource DoubleToString}, ConverterParameter=0}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="刷新间隔" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="500" Maximum="3000" SmallChange="100" LargeChange="500"
+                            Value="{Binding Config.UpdateIntervalMs}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.UpdateIntervalMs}" Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="小数位" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="0" Maximum="2" SmallChange="1" LargeChange="1"
+                            Value="{Binding Config.Precision}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.Precision}" Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+
+                <TextBlock Text="显示项与行为" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <WrapPanel Margin="0,0,0,6">
+                    <CheckBox Content="上传" IsChecked="{Binding Config.ShowUpload}" Margin="0,0,18,0"/>
+                    <CheckBox Content="下载" IsChecked="{Binding Config.ShowDownload}" Margin="0,0,18,0"/>
+                    <CheckBox Content="内存" IsChecked="{Binding Config.ShowMemory}" Margin="0,0,18,0"/>
+                </WrapPanel>
+                <WrapPanel Margin="0,0,0,6">
+                    <RadioButton Content="横向排列" GroupName="Orientation" Margin="0,0,18,0"
+                                 IsChecked="{Binding Config.Orientation, Converter={StaticResource OrientationToBool}, ConverterParameter=Horizontal, Mode=OneWay}"/>
+                    <RadioButton Content="纵向排列" GroupName="Orientation"
+                                 IsChecked="{Binding Config.Orientation, Converter={StaticResource OrientationToBool}, ConverterParameter=Vertical, Mode=OneWay}"/>
+                </WrapPanel>
+                <TextBlock Text="提示：横纵排列需点击“保存并应用”后重启窗口生效" Style="{StaticResource LabelText}" Margin="0,0,0,6"/>
+                <CheckBox Content="开机自动启动" IsChecked="{Binding Config.AutoStart}" Margin="0,0,0,6"/>
+                <CheckBox Content="拖动时吸附屏幕边缘" IsChecked="{Binding Config.SnapToEdge}" Margin="0,0,0,6"/>
+                <CheckBox Content="鼠标穿透（点击直达下层窗口，Ctrl+Alt+M 切回）"
+                          IsChecked="{Binding Config.MousePassThrough}" Margin="0,0,0,14"/>
+
+                <TextBlock Text="内存进度条" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <WrapPanel Margin="0,0,0,6">
+                    <CheckBox Content="显示进度条" IsChecked="{Binding Config.ShowMemoryBar}" Margin="0,0,18,0"/>
+                    <CheckBox Content="显示百分比" IsChecked="{Binding Config.ShowMemoryPercent}" Margin="0,0,18,0"/>
+                </WrapPanel>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="数值标识" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryLabel, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource HexInput}" ToolTip="显示在百分比前的标识，如 M: / MEM: / 内存:，留空则不显示"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="填充颜色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryBarColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="12" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="36"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="底槽颜色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryBarBackground, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
+                    <Border Grid.Column="2" Width="20" Height="12" CornerRadius="3" Margin="6,0,0,0"
+                            Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
+                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="宽度" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="10" Maximum="160" SmallChange="2" LargeChange="10"
+                            Value="{Binding Config.MemoryBarWidth}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.MemoryBarWidth, Converter={StaticResource DoubleToString}, ConverterParameter=0}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="高度" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="2" Maximum="16" SmallChange="1" LargeChange="2"
+                            Value="{Binding Config.MemoryBarHeight}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.MemoryBarHeight, Converter={StaticResource DoubleToString}, ConverterParameter=0}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,14">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="位置" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" Height="28" SelectedValuePath="Tag"
+                              SelectedValue="{Binding Config.MemoryBarPosition}">
+                        <ComboBoxItem Content="数值之前" Tag="Before"/>
+                        <ComboBoxItem Content="数值之后" Tag="After"/>
+                    </ComboBox>
+                </Grid>
+
+                <TextBlock Text="网卡与流量" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="监听网卡" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" Height="28" ItemsSource="{Binding Adapters}" SelectedItem="{Binding SelectedAdapter}"
+                              DisplayMemberPath="Name"/>
+                </Grid>
+                <TextBlock Text="Auto 模式下自动排除虚拟网卡（如 Clash vgate0 / TAP / WSL 等）" Style="{StaticResource LabelText}" Margin="80,0,0,10"/>
+
+                <Border Background="#F0F3F6" CornerRadius="6" Padding="10" Margin="0,0,0,8">
+                    <StackPanel>
+                        <TextBlock Text="当日流量统计" FontSize="13" FontWeight="Bold" Margin="0,0,0,6"/>
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding TodayDownloadText, StringFormat='下载累计: {0}'}" FontSize="12"/>
+                            <TextBlock Grid.Column="1" Text="{Binding TodayUploadText, StringFormat='上传累计: {0}'}" FontSize="12"/>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding PeakDownloadText, StringFormat='下载峰值: {0}'}" FontSize="12"/>
+                            <TextBlock Grid.Column="1" Text="{Binding PeakUploadText, StringFormat='上传峰值: {0}'}" FontSize="12"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="重置统计" Width="90" Height="32" Margin="0,0,8,0" Command="{Binding ResetTrafficCommand}"/>
+            <Button Content="取消" Width="70" Height="32" Margin="0,0,8,0" Click="Cancel_Click"/>
+            <Button Content="保存并应用" Width="100" Height="32" Click="Save_Click" Background="#185FA5" Foreground="White"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>NetSpeedMonitor</AssemblyName>
+    <RootNamespace>NetSpeedMonitor</RootNamespace>
+    <Version>1.0.0</Version>
+    <Authors>NetSpeedMonitor</Authors>
+    <Description>Windows floating network speed and memory monitor</Description>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,49 @@
+# ========== .NET 编译产物 ==========
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Xx]64/
+[Xx]86/
+[Bb]uild/
+artifacts/
+
+# 调试符号（pdb 对最终用户无意义，且体积随版本累积）
+*.pdb
+*.ilk
+*.exp
+
+# ========== 发布产物（走 GitHub Releases，不入库）==========
+publish/
+publish-fd/
+*.zip
+*.msi
+*.exe
+
+# ========== Visual Studio / Rider ==========
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.iml
+
+# ========== 测试与覆盖率 ==========
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+
+# ========== 操作系统临时文件 ==========
+Thumbs.db
+Desktop.ini
+.DS_Store
+desktop.ini
+
+# ========== 日志与临时截图 ==========
+*.log
+*_screen.png
+*_zoom.png
+*_crop*.png
