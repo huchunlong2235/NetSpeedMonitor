@@ -175,10 +175,7 @@ public partial class App : Application
 
     private void ShowCleanToast(string message)
     {
-        // 自绘 Toast 不依赖系统通知设置；系统气泡作为补充，双保险
-        _trayIcon?.ShowBalloonTip(2000, "内存清理", message,
-            System.Windows.Forms.ToolTipIcon.Info);
-
+        // 只用自绘 Toast：系统气泡与 Toast 同处屏幕右下角，会互相重叠
         void Show()
         {
             if (_toast is null)
