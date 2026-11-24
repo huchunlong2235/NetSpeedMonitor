@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using NetSpeedMonitor.Services;
 using NetSpeedMonitor.ViewModels;
 
 namespace NetSpeedMonitor.Views;
@@ -72,23 +73,29 @@ public partial class HistoryWindow : Window
             Canvas.SetTop(label, Math.Max(0, Math.Min(height - 13, y - 7)));
         }
 
+        // 固定 5 分钟滚动窗口：终点 = 最新样本，起点 = 终点 - 窗口时长。
+        // 曲线按时间戳定位（而非索引均分），数据不足时从右侧逐渐填充，
+        // 起点时间随每秒采样持续前移，与任务管理器行为一致。
+        var end = points[^1].Time;
+        var start = end.AddSeconds(-HistoryService.WindowSeconds + 1);
+        double spanSeconds = HistoryService.WindowSeconds - 1;
+        double MapX(DateTime t) =>
+            Math.Max(0, Math.Min(width, (t - start).TotalSeconds / spanSeconds * width));
+
         // 曲线
         var uploadPoints = new PointCollection();
         var downloadPoints = new PointCollection();
-        for (var i = 0; i < points.Count; i++)
+        foreach (var p in points)
         {
-            var x = i / (double)(points.Count - 1) * width;
-            var yu = height - points[i].Upload / max * height;
-            var yd = height - points[i].Download / max * height;
-            uploadPoints.Add(new System.Windows.Point(x, yu));
-            downloadPoints.Add(new System.Windows.Point(x, yd));
+            double x = MapX(p.Time);
+            uploadPoints.Add(new System.Windows.Point(x, height - p.Upload / max * height));
+            downloadPoints.Add(new System.Windows.Point(x, height - p.Download / max * height));
         }
         UploadLine.Points = uploadPoints;
         DownloadLine.Points = downloadPoints;
 
-        // X 轴时间刻度：起点 / 中点 / 终点
-        int mid = points.Count / 2;
-        var times = new[] { points[0].Time, points[mid].Time, points[^1].Time };
+        // X 轴时间刻度：起点 / 中点 / 终点（均按时间窗口计算，每秒刷新）
+        var times = new[] { start, start.AddSeconds(spanSeconds / 2), end };
         for (var i = 0; i < 3; i++)
         {
             _xLabels[i].Text = times[i].ToString("HH:mm:ss");
