@@ -20,18 +20,20 @@
 
 ### 方式 A：逐条命令
 
+两个版本输出到同一 `publish/` 目录，仅文件名不同。推荐用方式 B 的一键脚本。
+
 ```bash
-# 轻量版（framework-dependent，~246 KB，需系统已装 .NET 9）
+# 轻量版（framework-dependent，~248 KB，需系统已装 .NET 9）
 dotnet publish -c Release -r win-x64 --self-contained false \
-  -p:PublishSingleFile=true \
-  -p:IncludeNativeLibrariesForSelfExtract=true \
-  -o ../../publish-fd
+  -p:PublishSingleFile=true -p:DebugType=none \
+  -o ../../publish-lite-tmp
+# 发布后把 publish-lite-tmp/NetSpeedMonitor.exe 改名为 publish/NetSpeedMonitor-lite.exe
 
 # 独立版（self-contained，~71 MB，无需 .NET）
 dotnet publish -c Release -r win-x64 --self-contained true \
   -p:PublishSingleFile=true \
   -p:IncludeNativeLibrariesForSelfExtract=true \
-  -p:EnableCompressionInSingleFile=true \
+  -p:EnableCompressionInSingleFile=true -p:DebugType=none \
   -o ../../publish
 ```
 
@@ -83,7 +85,7 @@ git push -u origin main
 **附件命名建议**（带版本号，便于用户区分）：
 
 ```
-NetSpeedMonitor-v1.0.0-lightweight.exe   ← 来自 publish-fd/NetSpeedMonitor.exe（246 KB）
+NetSpeedMonitor-v1.0.0-lightweight.exe   ← 来自 publish/NetSpeedMonitor-lite.exe（248 KB）
 NetSpeedMonitor-v1.0.0-portable.exe      ← 来自 publish/NetSpeedMonitor.exe（71 MB）
 ```
 

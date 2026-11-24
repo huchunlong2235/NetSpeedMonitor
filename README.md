@@ -6,9 +6,11 @@ Windows 桌面悬浮窗工具，实时显示上传/下载速率与物理内存�
 
 提供两个版本，功能完全相同，区别只在体积和内存占用：
 
+两个版本放在同一目录 `publish/` 下，仅文件名不同：
+
 | 版本 | 路径 | exe 体积 | 独占内存 | 前置条件 | 推荐场景 |
 |---|---|---|---|---|---|
-| **轻量版（推荐）** | `publish-fd/NetSpeedMonitor.exe` | 246 KB | ~64 MB | 需本机已装 .NET 9 运行时 | 本机使用，内存占用低 |
+| **轻量版（推荐）** | `publish/NetSpeedMonitor-lite.exe` | 248 KB | ~64 MB | 需本机已装 .NET 9 运行时 | 本机使用，内存占用低 |
 | 独立版 | `publish/NetSpeedMonitor.exe` | 71 MB | ~140 MB | 无 | 拷到未装 .NET 的机器 |
 
 > 轻量版之所以省一半内存：独立版把整个 .NET 运行时打包进 exe 并在启动时解压，运行时再加载一份，与系统已装的运行时重复；轻量版直接复用系统运行时。本机已装 .NET 9 运行时（含 WPF 的 WindowsDesktop.App），因此推荐轻量版。
@@ -67,8 +69,9 @@ Windows 桌面悬浮窗工具，实时显示上传/下载速率与物理内存�
 
 ```
 NetSpeedMonitor/
-├── publish-fd/NetSpeedMonitor.exe   # 轻量版：单文件 246 KB，需 .NET 9 运行时（推荐）
-├── publish/NetSpeedMonitor.exe      # 独立版：单文件 71 MB，无需运行时
+├── publish/                         # 两个版本同目录
+│   ├── NetSpeedMonitor-lite.exe     # 轻量版：单文件 248 KB，需 .NET 9 运行时（推荐）
+│   └── NetSpeedMonitor.exe          # 独立版：单文件 71 MB，无需运行时
 └── src/NetSpeedMonitor/             # 完整源码
     ├── Models/                      # 配置模型、主题预设
     ├── Services/                    # 采样、配置持久化、开机自启、历史缓冲、内存清理
@@ -81,18 +84,21 @@ NetSpeedMonitor/
 
 需要 .NET 9 SDK（含 Windows Desktop 工作负载）：
 
+推荐直接运行一键脚本 `build.ps1`（在仓库根目录）：它会把两个版本都输出到 `publish/`，并自动处理命名与旧文件清理。
+
+手动构建时，轻量版需先发布到临时目录再改名移入 `publish/`，避免与独立版的 `NetSpeedMonitor.exe` 冲突：
+
 ```bash
 # 轻量版（复用系统运行时，推荐）
 dotnet publish -c Release -r win-x64 --self-contained false \
-  -p:PublishSingleFile=true \
-  -p:IncludeNativeLibrariesForSelfExtract=true \
-  -o publish-fd
+  -p:PublishSingleFile=true -p:DebugType=none \
+  -o publish-lite-tmp
+mv publish-lite-tmp/NetSpeedMonitor.exe publish/NetSpeedMonitor-lite.exe
 
 # 独立版（打包运行时，可拷到其他机器）
 dotnet publish -c Release -r win-x64 --self-contained true \
-  -p:PublishSingleFile=true \
-  -p:IncludeNativeLibrariesForSelfExtract=true \
-  -p:EnableCompressionInSingleFile=true \
+  -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true \
+  -p:EnableCompressionInSingleFile=true -p:DebugType=none \
   -o publish
 ```
 
