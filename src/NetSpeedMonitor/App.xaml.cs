@@ -95,12 +95,28 @@ public partial class App : Application
 
         _trayIcon = new NotifyIcon
         {
-            Icon = System.Drawing.SystemIcons.Information,
+            Icon = LoadAppIcon(),
             Text = "网速监控 · 双击显示/隐藏",
             ContextMenuStrip = menu,
             Visible = true
         };
         _trayIcon.DoubleClick += (_, _) => ToggleOverlay();
+    }
+
+    /// <summary>从 exe 的 Win32 资源提取应用图标（ApplicationIcon 编译期嵌入）；失败回退系统图标</summary>
+    private static System.Drawing.Icon LoadAppIcon()
+    {
+        try
+        {
+            var exe = Environment.ProcessPath;
+            if (!string.IsNullOrEmpty(exe) && File.Exists(exe))
+            {
+                var ico = System.Drawing.Icon.ExtractAssociatedIcon(exe);
+                if (ico is not null) return ico;
+            }
+        }
+        catch { }
+        return System.Drawing.SystemIcons.Information;
     }
 
     private void ToggleOverlay()
