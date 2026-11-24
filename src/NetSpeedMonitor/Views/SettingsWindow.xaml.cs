@@ -38,7 +38,7 @@ public partial class SettingsWindow : Window
             _vm.Config.Orientation = orientationPanel.Content?.ToString() == "纵向排列" ? "Vertical" : "Horizontal";
 
         _vm.SaveCommand.Execute(null);
-        DialogResult = true;
+        // 窗口由 App 用 Show() 非模态打开，不能设置 DialogResult（会抛 InvalidOperationException 导致 Close 不执行）
         Close();
     }
 
@@ -46,7 +46,6 @@ public partial class SettingsWindow : Window
     {
         Restore(_vm.Config, _snapshot);
         _vm.SaveCommand.Execute(null);
-        DialogResult = false;
         Close();
     }
 

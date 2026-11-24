@@ -110,12 +110,22 @@ public partial class App : Application
         if (_overlay is null) return;
         _overlay.Show();
         _overlay.Activate();
+        // 持久化"显示"状态，供下次开机自启恢复（此前只 Show 不落盘，导致状态永远回不到 true）
+        if (_main is not null)
+        {
+            _main.Config.WindowVisible = true;
+            _main.SaveConfig();
+        }
     }
 
     private void HideOverlay()
     {
         _overlay?.Hide();
-        if (_main is not null) _main.Config.WindowVisible = false;
+        if (_main is not null)
+        {
+            _main.Config.WindowVisible = false;
+            _main.SaveConfig();
+        }
     }
 
     private void OpenSettings()

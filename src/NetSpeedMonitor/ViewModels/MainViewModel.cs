@@ -233,7 +233,8 @@ public class MainViewModel : INotifyPropertyChanged
     public void Shutdown()
     {
         _timer.Stop();
-        Config.WindowVisible = false;
+        // 不再强制写 WindowVisible=false：保持退出前的真实可见状态，
+        // 否则显示着退出也会被记成隐藏，导致下次开机自启后悬浮窗不显示。
         SaveConfig();
     }
 

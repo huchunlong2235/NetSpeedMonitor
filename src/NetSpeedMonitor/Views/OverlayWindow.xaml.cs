@@ -147,7 +147,8 @@ public partial class OverlayWindow : Window
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        _vm.Config.WindowVisible = false;
-        _vm.SaveConfig();
+        // 不在此写 WindowVisible=false：程序退出/系统关机会触发 Closing，
+        // 那会把"显示中退出"错误记成隐藏，导致下次开机自启后悬浮窗不显示。
+        // 可见状态统一由 App 的 ShowOverlay/HideOverlay 维护。
     }
 }
