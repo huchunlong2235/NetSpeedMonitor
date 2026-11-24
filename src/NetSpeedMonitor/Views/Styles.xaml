@@ -23,6 +23,31 @@
         <Setter Property="FontSize" Value="12"/>
     </Style>
 
+    <!-- 可点击色卡：背景色由绑定注入，点击弹出系统选色器 -->
+    <Style TargetType="Button" x:Key="ColorSwatch">
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bd" CornerRadius="4"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="#A0A0A0" BorderThickness="1"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#666"/>
+                            <Setter TargetName="bd" Property="BorderThickness" Value="1.5"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#2B7DE9"/>
+                            <Setter TargetName="bd" Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="Slider" x:Key="ValueSlider">
         <Setter Property="Height" Value="24"/>
         <Setter Property="VerticalAlignment" Value="Center"/>

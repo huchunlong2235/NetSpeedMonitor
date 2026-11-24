@@ -17,68 +17,78 @@
                 <ComboBox x:Name="ThemeCombo" Height="30" Margin="0,0,0,4"
                           ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}"
                           DisplayMemberPath="Name"/>
-                <TextBlock Text="选择预设主题，或直接在下方微调各项颜色" Style="{StaticResource LabelText}" Margin="0,0,0,14"/>
+                <TextBlock Text="选择预设主题，或点击下方色卡调整各项颜色" Style="{StaticResource LabelText}" Margin="0,0,0,14"/>
 
                 <TextBlock Text="颜色" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
                 <Grid Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="背景色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.BackgroundColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="BackgroundColor"
                             Background="{Binding Config.BackgroundColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.BackgroundColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="文字色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.TextColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="TextColor"
                             Background="{Binding Config.TextColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.TextColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="上传色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.UploadColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="UploadColor"
                             Background="{Binding Config.UploadColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.UploadColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="下载色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.DownloadColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="DownloadColor"
                             Background="{Binding Config.DownloadColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.DownloadColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,14">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="内存色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="20" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="MemoryColor"
                             Background="{Binding Config.MemoryColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.MemoryColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
 
                 <TextBlock Text="尺寸与透明度" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
@@ -165,25 +175,29 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="填充颜色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryBarColor, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="12" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="MemoryBarColor"
                             Background="{Binding Config.MemoryBarColor, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.MemoryBarColor}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="36"/>
+                        <ColumnDefinition Width="64"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="底槽颜色" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Config.MemoryBarBackground, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource HexInput}"/>
-                    <Border Grid.Column="2" Width="20" Height="12" CornerRadius="3" Margin="6,0,0,0"
+                    <Button Grid.Column="1" Style="{StaticResource ColorSwatch}" Tag="MemoryBarBackground"
                             Background="{Binding Config.MemoryBarBackground, Converter={StaticResource HexToBrush}}"
-                            BorderBrush="#CCC" BorderThickness="0.5"/>
+                            Click="PickColor_Click"
+                            ToolTip="点击选择颜色"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.MemoryBarBackground}" Style="{StaticResource LabelText}"
+                               FontFamily="Consolas" VerticalAlignment="Center" TextAlignment="Right"/>
                 </Grid>
                 <Grid Margin="0,0,0,4">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/><ColumnDefinition Width="46"/></Grid.ColumnDefinitions>
