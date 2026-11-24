@@ -19,6 +19,7 @@ public partial class App : Application
     private OverlayWindow? _overlay;
     private SettingsWindow? _settings;
     private HistoryWindow? _history;
+    private ToastWindow? _toast;
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -46,8 +47,7 @@ public partial class App : Application
         _main.RequestShowHistory += ShowHistory;
         _main.RequestExit += ExitApp;
         _main.RequestHideWindow += HideOverlay;
-        _main.MemoryCleaned += msg => _trayIcon?.ShowBalloonTip(3000, "内存清理", msg,
-            System.Windows.Forms.ToolTipIcon.Info);
+        _main.MemoryCleaned += ShowCleanToast;
 
         _overlay = new OverlayWindow(_main);
         if (_main.Config.WindowVisible) _overlay.Show();
@@ -150,9 +150,30 @@ public partial class App : Application
         _history.Activate();
     }
 
+    private void ShowCleanToast(string message)
+    {
+        // 自绘 Toast 不依赖系统通知设置；系统气泡作为补充，双保险
+        _trayIcon?.ShowBalloonTip(2000, "内存清理", message,
+            System.Windows.Forms.ToolTipIcon.Info);
+
+        void Show()
+        {
+            if (_toast is null)
+            {
+                _toast = new ToastWindow();
+                _toast.Closed += (_, _) => _toast = null;
+            }
+            _toast.ShowMessage(message);
+        }
+
+        if (Dispatcher.CheckAccess()) Show();
+        else Dispatcher.Invoke(Show);
+    }
+
     private void ExitApp()
     {
         _main?.Shutdown();
+        if (_toast is { IsVisible: true }) _toast.Close();
         if (_trayIcon is not null) _trayIcon.Visible = false;
         _trayIcon?.Dispose();
         _mutex?.ReleaseMutex();
