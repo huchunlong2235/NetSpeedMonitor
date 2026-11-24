@@ -65,7 +65,14 @@ public partial class App : Application
         menu.Items.Add(new MenuItem("显示 / 隐藏", null, (_, _) => ToggleOverlay()));
         menu.Items.Add(new MenuItem("历史曲线", null, (_, _) => ShowHistory()));
         var cleanItem = new MenuItem("清理内存", null, (_, _) => _main?.CleanMemory());
-        menu.Opening += (_, _) => cleanItem.Text = $"清理内存 ({_main?.Config.CleanHotkey})";
+        menu.Opening += (_, _) =>
+        {
+            // 热键留空/无效时不显示括号，与热键注册逻辑（TryParse 失败不注册）保持一致
+            var hk = _main?.Config.CleanHotkey;
+            cleanItem.Text = NetSpeedMonitor.Helpers.GlobalHotkeys.TryParse(hk, out _, out _)
+                ? $"清理内存 ({hk})"
+                : "清理内存";
+        };
         menu.Items.Add(cleanItem);
         menu.Items.Add(new MenuItem("设置", null, (_, _) => OpenSettings()));
         menu.Items.Add(new ToolStripSeparator());
