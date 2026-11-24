@@ -21,7 +21,7 @@
 ### 方式 A：逐条命令
 
 ```bash
-# 轻量版（framework-dependent，~236 KB，需系统已装 .NET 9）
+# 轻量版（framework-dependent，~246 KB，需系统已装 .NET 9）
 dotnet publish -c Release -r win-x64 --self-contained false \
   -p:PublishSingleFile=true \
   -p:IncludeNativeLibrariesForSelfExtract=true \
@@ -83,7 +83,7 @@ git push -u origin main
 **附件命名建议**（带版本号，便于用户区分）：
 
 ```
-NetSpeedMonitor-v1.0.0-lightweight.exe   ← 来自 publish-fd/NetSpeedMonitor.exe（236 KB）
+NetSpeedMonitor-v1.0.0-lightweight.exe   ← 来自 publish-fd/NetSpeedMonitor.exe（246 KB）
 NetSpeedMonitor-v1.0.0-portable.exe      ← 来自 publish/NetSpeedMonitor.exe（71 MB）
 ```
 
