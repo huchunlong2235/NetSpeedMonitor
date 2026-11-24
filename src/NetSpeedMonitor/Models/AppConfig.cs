@@ -43,6 +43,13 @@ public class AppConfig : INotifyPropertyChanged
     private double _peakUpload;
     private double _peakDownload;
 
+    // 自动清理内存
+    private bool _autoCleanEnabled;
+    private double _cleanThreshold = 90;
+    private bool _periodicCleanEnabled;
+    private int _periodicCleanMinutes = 30;
+    private string _cleanHotkey = "Ctrl+Alt+C";
+
     public string Theme { get => _theme; set => Set(ref _theme, value); }
     public string BackgroundColor { get => _backgroundColor; set => Set(ref _backgroundColor, value); }
     public string TextColor { get => _textColor; set => Set(ref _textColor, value); }
@@ -92,6 +99,17 @@ public class AppConfig : INotifyPropertyChanged
     public long TotalSentBytes { get => _totalSentBytes; set => Set(ref _totalSentBytes, value); }
     public double PeakUpload { get => _peakUpload; set => Set(ref _peakUpload, value); }
     public double PeakDownload { get => _peakDownload; set => Set(ref _peakDownload, value); }
+
+    /// <summary>是否启用内存占用超阈值自动清理</summary>
+    public bool AutoCleanEnabled { get => _autoCleanEnabled; set => Set(ref _autoCleanEnabled, value); }
+    /// <summary>触发清理的内存占用百分比阈值</summary>
+    public double CleanThreshold { get => _cleanThreshold; set => Set(ref _cleanThreshold, value); }
+    /// <summary>是否启用按周期清理</summary>
+    public bool PeriodicCleanEnabled { get => _periodicCleanEnabled; set => Set(ref _periodicCleanEnabled, value); }
+    /// <summary>周期清理间隔（分钟）</summary>
+    public int PeriodicCleanMinutes { get => _periodicCleanMinutes; set => Set(ref _periodicCleanMinutes, value); }
+    /// <summary>手动清理的全局热键（如 Ctrl+Alt+C）</summary>
+    public string CleanHotkey { get => _cleanHotkey; set => Set(ref _cleanHotkey, value); }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

@@ -218,7 +218,35 @@
                     <ComboBox Grid.Column="1" Height="28" ItemsSource="{Binding Adapters}" SelectedItem="{Binding SelectedAdapter}"
                               DisplayMemberPath="Name"/>
                 </Grid>
-                <TextBlock Text="Auto 模式下自动排除虚拟网卡（如 Clash vgate0 / TAP / WSL 等）" Style="{StaticResource LabelText}" Margin="80,0,0,10"/>
+                <TextBlock Text="Auto 模式下自动排除虚拟网卡（如 Clash vgate0 / TAP / WSL 等）" Style="{StaticResource LabelText}" Margin="80,0,0,14"/>
+
+                <TextBlock Text="自动清理内存" FontSize="14" FontWeight="Bold" Margin="0,0,0,8"/>
+                <TextBlock Text="清理各进程工作集，使任务管理器「占用内存」数字回落。不增加物理内存，清理后程序再次访问内存可能短暂变慢。"
+                           Style="{StaticResource LabelText}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <CheckBox Content="内存占用达阈值时自动清理" IsChecked="{Binding Config.AutoCleanEnabled}" Margin="0,0,0,6"/>
+                <Grid Margin="20,0,0,8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/><ColumnDefinition Width="48"/></Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="阈值" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="50" Maximum="99" SmallChange="1" LargeChange="5"
+                            Value="{Binding Config.CleanThreshold}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.CleanThreshold, Converter={StaticResource DoubleToString}, ConverterParameter=0, StringFormat='{}{0}%'}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <CheckBox Content="每隔指定时间清理" IsChecked="{Binding Config.PeriodicCleanEnabled}" Margin="0,0,0,6"/>
+                <Grid Margin="20,0,0,8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="70"/><ColumnDefinition Width="*"/><ColumnDefinition Width="48"/></Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="间隔" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <Slider Grid.Column="1" Minimum="1" Maximum="180" SmallChange="5" LargeChange="15"
+                            Value="{Binding Config.PeriodicCleanMinutes}" Style="{StaticResource ValueSlider}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Config.PeriodicCleanMinutes, StringFormat='{}{0}分'}"
+                               Style="{StaticResource LabelText}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="80"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBlock Text="清理热键" Style="{StaticResource LabelText}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Height="28" Text="{Binding Config.CleanHotkey, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalContentAlignment="Center" Padding="6,0" ToolTip="如 Ctrl+Alt+C；留空则禁用"/>
+                </Grid>
 
                 <Border Background="#F0F3F6" CornerRadius="6" Padding="10" Margin="0,0,0,8">
                     <StackPanel>

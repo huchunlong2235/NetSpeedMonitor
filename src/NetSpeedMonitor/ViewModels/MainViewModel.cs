@@ -16,7 +16,10 @@ public class MainViewModel : INotifyPropertyChanged
     private readonly NetworkService _networkService = new();
     private readonly MemoryService _memoryService = new();
     private readonly HistoryService _historyService = new();
+    private readonly MemoryCleanService _cleanService = new();
     private readonly DispatcherTimer _timer = new();
+    private DateTime _lastCleanTime = DateTime.MinValue;
+    private bool _thresholdTriggered; // 阈值触发防抖：低于阈值-5% 才复位
 
     private double _downloadSpeed;
     private double _uploadSpeed;
@@ -59,6 +62,7 @@ public class MainViewModel : INotifyPropertyChanged
         ExitCommand = new RelayCommand(ExitApp);
         HideWindowCommand = new RelayCommand(HideWindow);
         TogglePassThroughCommand = new RelayCommand(() => Config.MousePassThrough = !Config.MousePassThrough);
+        CleanMemoryCommand = new RelayCommand(CleanMemory);
     }
 
     public System.Windows.Media.Brush OverlayBackground
@@ -92,6 +96,10 @@ public class MainViewModel : INotifyPropertyChanged
     public ICommand ExitCommand { get; }
     public ICommand HideWindowCommand { get; }
     public ICommand TogglePassThroughCommand { get; }
+    public ICommand CleanMemoryCommand { get; }
+
+    /// <summary>清理完成事件：参数为结果描述，供托盘气泡提示</summary>
+    public event Action<string>? MemoryCleaned;
 
     public event Action? RequestOpenSettings;
     public event Action? RequestShowHistory;
@@ -127,7 +135,64 @@ public class MainViewModel : INotifyPropertyChanged
         if (upload > Config.PeakUpload) Config.PeakUpload = upload;
 
         if (_sampleCount % 15 == 0) SaveConfig();
+
+        CheckAutoClean(memory);
     }
+
+    /// <summary>检查阈值/周期触发条件，异步执行清理避免阻塞 UI 采样</summary>
+    private void CheckAutoClean(double memoryPercent)
+    {
+        // 阈值触发：达到阈值且未处于已触发状态；回落到阈值-5% 才允许下次触发（防抖）
+        if (Config.AutoCleanEnabled)
+        {
+            if (memoryPercent >= Config.CleanThreshold && !_thresholdTriggered)
+            {
+                _thresholdTriggered = true;
+                TriggerClean($"内存达到 {memoryPercent:0}%");
+            }
+            else if (memoryPercent < Config.CleanThreshold - 5)
+            {
+                _thresholdTriggered = false;
+            }
+        }
+
+        // 周期触发：距上次清理超过设定分钟数
+        if (Config.PeriodicCleanEnabled && Config.PeriodicCleanMinutes > 0)
+        {
+            if (DateTime.Now - _lastCleanTime >= TimeSpan.FromMinutes(Config.PeriodicCleanMinutes))
+                TriggerClean($"每隔 {Config.PeriodicCleanMinutes} 分钟");
+        }
+    }
+
+    private bool _cleanInProgress;
+    private void TriggerClean(string reason)
+    {
+        if (_cleanInProgress) return;
+        _cleanInProgress = true;
+        _lastCleanTime = DateTime.Now;
+
+        _ = System.Threading.Tasks.Task.Run(() =>
+        {
+            try
+            {
+                var result = _cleanService.Clean();
+                var freedMb = result.FreedBytes / 1024.0 / 1024.0;
+                var msg = $"已清理 {result.ProcessCount} 个进程，释放约 {freedMb:0} MB（{reason}）";
+                System.Windows.Application.Current?.Dispatcher.Invoke(() => MemoryCleaned?.Invoke(msg));
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Application.Current?.Dispatcher.Invoke(() => MemoryCleaned?.Invoke($"清理失败：{ex.Message}"));
+            }
+            finally
+            {
+                _cleanInProgress = false;
+            }
+        });
+    }
+
+    /// <summary>手动清理（托盘菜单/快捷键/设置窗口）</summary>
+    public void CleanMemory() => TriggerClean("手动触发");
 
     private string FormatSpeed(double bytesPerSecond)
     {

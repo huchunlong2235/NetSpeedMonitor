@@ -11,7 +11,7 @@ public partial class OverlayWindow : Window
 {
     private readonly MainViewModel _vm;
     private bool _positionLoaded;
-    private GlobalHotkey? _hotkey;
+    private GlobalHotkeys? _hotkeys;
 
     public OverlayWindow(MainViewModel vm)
     {
@@ -33,18 +33,32 @@ public partial class OverlayWindow : Window
         var hwnd = new WindowInteropHelper(this).Handle;
 
         // Ctrl+Alt+M：穿透状态下无法点击窗口，用全局热键切回可交互
-        _hotkey = new GlobalHotkey(hwnd);
-        _hotkey.HotkeyPressed += () => _vm.Config.MousePassThrough = !_vm.Config.MousePassThrough;
-        _hotkey.Register();
-        HwndSource.FromHwnd(hwnd)?.AddHook(_hotkey.OnMessage);
+        _hotkeys = new GlobalHotkeys(hwnd);
+        _hotkeys.Register("PassThrough", "Ctrl+Alt+M",
+            () => _vm.Config.MousePassThrough = !_vm.Config.MousePassThrough);
+        // 内存清理热键（可配置）
+        RegisterCleanHotkey();
+        _vm.Config.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(_vm.Config.CleanHotkey)) RegisterCleanHotkey();
+        };
+        HwndSource.FromHwnd(hwnd)?.AddHook(_hotkeys.OnMessage);
 
         ApplyPassThrough();
     }
 
+    private void RegisterCleanHotkey()
+    {
+        if (_hotkeys is null) return;
+        _hotkeys.Unregister("CleanMemory");
+        if (GlobalHotkeys.TryParse(_vm.Config.CleanHotkey, out _, out _))
+            _hotkeys.Register("CleanMemory", _vm.Config.CleanHotkey, () => _vm.CleanMemory());
+    }
+
     protected override void OnClosed(EventArgs e)
     {
-        _hotkey?.Dispose();
-        _hotkey = null;
+        _hotkeys?.Dispose();
+        _hotkeys = null;
         base.OnClosed(e);
     }
 

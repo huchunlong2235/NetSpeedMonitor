@@ -46,6 +46,8 @@ public partial class App : Application
         _main.RequestShowHistory += ShowHistory;
         _main.RequestExit += ExitApp;
         _main.RequestHideWindow += HideOverlay;
+        _main.MemoryCleaned += msg => _trayIcon?.ShowBalloonTip(3000, "内存清理", msg,
+            System.Windows.Forms.ToolTipIcon.Info);
 
         _overlay = new OverlayWindow(_main);
         if (_main.Config.WindowVisible) _overlay.Show();
@@ -62,8 +64,11 @@ public partial class App : Application
         var menu = new ContextMenuStrip();
         menu.Items.Add(new MenuItem("显示 / 隐藏", null, (_, _) => ToggleOverlay()));
         menu.Items.Add(new MenuItem("历史曲线", null, (_, _) => ShowHistory()));
+        var cleanItem = new MenuItem("清理内存", null, (_, _) => _main?.CleanMemory());
+        menu.Opening += (_, _) => cleanItem.Text = $"清理内存 ({_main?.Config.CleanHotkey})";
+        menu.Items.Add(cleanItem);
         menu.Items.Add(new MenuItem("设置", null, (_, _) => OpenSettings()));
-        menu.Items.Add(new MenuItem("-"));
+        menu.Items.Add(new ToolStripSeparator());
 
         var passThroughItem = new MenuItem("鼠标穿透 (Ctrl+Alt+M)")
         {
