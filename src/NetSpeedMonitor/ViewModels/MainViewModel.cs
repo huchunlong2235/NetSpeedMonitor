@@ -52,6 +52,9 @@ public class MainViewModel : INotifyPropertyChanged
 
         Config.PropertyChanged += OnConfigChanged;
 
+        // 自愈自启登记：exe 移动/改名后注册表指向旧路径会失效，按当前配置校正
+        _autoStartService.EnsureRegistered(Config.AutoStart);
+
         _timer.Interval = TimeSpan.FromMilliseconds(Config.UpdateIntervalMs);
         _timer.Tick += OnTick;
         _timer.Start();
